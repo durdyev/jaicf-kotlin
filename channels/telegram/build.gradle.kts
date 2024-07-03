@@ -11,12 +11,7 @@ plugins {
 
 dependencies {
     core()
-    api("com.github.kotlin-telegram-bot:kotlin-telegram-bot:6.0.4") {
-        exclude("com.github.kotlin-telegram-bot.kotlin-telegram-bot", "webhook")
+    api("com.github.kotlin-telegram-bot:kotlin-telegram-bot:6.1.0") {
         exclude("org.jetbrains.kotlin", "kotlin-stdlib")
-        exclude("com.squareup.okhttp3", "okhttp")
-        exclude("com.squareup.okhttp3", "logging-interceptor")
     }
-    api("com.squareup.okhttp3:okhttp:3.14.0")
-    api("com.squareup.okhttp3:logging-interceptor:3.14.0")
 }

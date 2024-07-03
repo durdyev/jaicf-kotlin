@@ -1,11 +1,6 @@
 package com.justai.jaicf.channel.telegram
 
-import com.github.kotlintelegrambot.entities.Chat
-import com.github.kotlintelegrambot.entities.Contact
-import com.github.kotlintelegrambot.entities.Game
-import com.github.kotlintelegrambot.entities.Location
-import com.github.kotlintelegrambot.entities.Message
-import com.github.kotlintelegrambot.entities.Update
+import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.entities.files.Animation
 import com.github.kotlintelegrambot.entities.files.Audio
 import com.github.kotlintelegrambot.entities.files.Document
@@ -41,6 +36,7 @@ val TelegramBotRequest.videoNote get() = this as? TelegramVideoNoteRequest
 val TelegramBotRequest.voice get() = this as? TelegramVoiceRequest
 val TelegramBotRequest.preCheckout get() = this as? TelegramPreCheckoutRequest
 val TelegramBotRequest.successfulPayment get() = this as? TelegramSuccessfulPaymentRequest
+val TelegramBotRequest.callbackQuery get() = this as? TelegramCallbackQueryRequest
 
 internal val Message.clientId get() = chat.id.toString()
 
@@ -144,6 +140,12 @@ data class TelegramSuccessfulPaymentRequest(
     override val message: Message,
     val successfulPayment: SuccessfulPayment
 ) : TelegramBotRequest, EventBotRequest(clientId = message.clientId, input = TelegramEvent.SUCCESSFUL_PAYMENT)
+
+data class TelegramCallbackQueryRequest(
+    override val update: Update,
+    override val message: Message,
+    val callBackQuery: CallbackQuery,
+) : TelegramBotRequest, QueryBotRequest(clientId = callBackQuery.from.id.toString(), input = TelegramEvent.CALLBACK_QUERY)
 
 
 interface TelegramInvocationRequest : TelegramBotRequest, InvocationRequest {

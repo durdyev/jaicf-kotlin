@@ -21,7 +21,7 @@ private open class ContextRankingActivationSelector : ActivationSelector {
         botContext: BotContext,
         activations: List<Pair<Transition, ActivatorContext>>
     ): Activation? {
-        return activations.maxBy {
+        return activations.maxByOrNull {
             calculateScore(botContext, it.first, it.second)
         }?.let { Activation(it.first.toState, it.second) }
     }
