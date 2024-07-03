@@ -7,7 +7,6 @@ import com.github.kotlintelegrambot.dispatcher.*
 import com.github.kotlintelegrambot.dispatcher.handlers.Handler
 import com.github.kotlintelegrambot.entities.Update
 import com.github.kotlintelegrambot.logging.LogLevel.All
-import com.github.kotlintelegrambot.webhook
 import com.google.gson.Gson
 import com.justai.jaicf.api.BotApi
 import com.justai.jaicf.channel.http.HttpBotRequest
@@ -18,6 +17,7 @@ import com.justai.jaicf.channel.invocationapi.getRequestTemplateFromResources
 import com.justai.jaicf.channel.jaicp.JaicpCompatibleAsyncBotChannel
 import com.justai.jaicf.channel.jaicp.JaicpCompatibleAsyncChannelFactory
 import com.justai.jaicf.channel.jaicp.JaicpLiveChatProvider
+import com.justai.jaicf.channel.telegram.handlers.WebAppDataHandler
 import com.justai.jaicf.context.RequestContext
 import com.justai.jaicf.helpers.http.withTrailingSlash
 import com.justai.jaicf.helpers.kotlin.PropertyWithBackingField
@@ -25,18 +25,6 @@ import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-
-class TestHandler: Handler {
-    override fun checkUpdate(update: Update): Boolean {
-        print(update)
-        return true
-    }
-
-    override suspend fun handleUpdate(bot: Bot, update: Update) {
-        print(update)
-    }
-
-}
 
 class TelegramChannel(
     override val botApi: BotApi,
@@ -55,7 +43,7 @@ class TelegramChannel(
         logLevel = All()
 
         dispatch {
-            addHandler(TestHandler())
+            addHandler(WebAppDataHandler(botApi))
 
             fun process(request: TelegramBotRequest) {
                 requestExecutor.execute {
@@ -72,13 +60,9 @@ class TelegramChannel(
             }
 
             callbackQuery {
-                process(TelegramCallbackQueryRequest(update))
+                val message = callbackQuery.message ?: return@callbackQuery
+                process(TelegramQueryRequest(update, message, callbackQuery.data))
             }
-//
-//            callbackQuery {
-//                val message = callbackQuery.message ?: return@callbackQuery
-//                process(TelegramQueryRequest(update, message, callbackQuery.data))
-//            }
 
             location {
                 process(TelegramLocationRequest(update, location))
@@ -131,7 +115,6 @@ class TelegramChannel(
             successfulPayment {
                 process(TelegramSuccessfulPaymentRequest(update, successfulPayment))
             }
-
         }
     }
 

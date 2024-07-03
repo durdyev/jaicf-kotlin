@@ -26,7 +26,7 @@ class TelegramReactions(
     override val liveChatProvider: JaicpLiveChatProvider?
 ) : Reactions(), JaicpCompatibleAsyncReactions {
 
-    val chatId = ChatId.fromId(request.clientId.toLong())
+    val chatId = ChatId.fromId(request.update.message?.chat?.id?:request.clientId.toLong())
     private val messages = mutableListOf<Message>()
 
     private fun addResponse(pair: Pair<retrofit2.Response<Response<Message>?>?, Exception?>) {

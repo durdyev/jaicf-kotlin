@@ -45,6 +45,7 @@ data class TelegramTextRequest(
 
 data class TelegramQueryRequest(
     override val update: Update,
+    val message: Message,
     val data: String
 ) : TelegramBotRequest, QueryBotRequest(clientId = update.message?.clientId!!, input = data)
 
