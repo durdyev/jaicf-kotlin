@@ -2,6 +2,10 @@ plugins {
     kotlin("jvm")
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     implementation(kotlin("stdlib", Version.stdLib))
     implementation(project(":core"))

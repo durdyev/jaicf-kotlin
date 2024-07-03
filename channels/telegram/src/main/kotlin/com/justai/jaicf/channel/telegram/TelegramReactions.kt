@@ -14,6 +14,7 @@ import com.justai.jaicf.logging.ImageReaction
 import com.justai.jaicf.logging.SayReaction
 import com.justai.jaicf.reactions.Reactions
 import com.justai.jaicf.reactions.jaicp.JaicpCompatibleAsyncReactions
+import java.io.File
 
 val Reactions.telegram
     get() = this as? TelegramReactions
@@ -25,7 +26,7 @@ class TelegramReactions(
     override val liveChatProvider: JaicpLiveChatProvider?
 ) : Reactions(), JaicpCompatibleAsyncReactions {
 
-    val chatId = ChatId.fromId(request.chatId!!)
+    val chatId = ChatId.fromId(request.clientId.toLong())
     private val messages = mutableListOf<Message>()
 
     private fun addResponse(pair: Pair<retrofit2.Response<Response<Message>?>?, Exception?>) {
@@ -80,28 +81,23 @@ class TelegramReactions(
         parseMode: ParseMode? = null,
         disableWebPagePreview: Boolean? = null,
         disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
-    ) = sendMessage(text, parseMode, disableWebPagePreview, disableNotification, replyToMessageId, replyMarkup)
+        replyMarkup: KeyboardReplyMarkup
+    ) = sendMessage(text, parseMode, disableWebPagePreview, disableNotification, replyMarkup)
 
     fun sendMessage(
         text: String,
         parseMode: ParseMode? = null,
         disableWebPagePreview: Boolean? = null,
         disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean = false
+        replyMarkup: KeyboardReplyMarkup? = null
     ): SayReaction {
         api.sendMessage(
-            chatId,
-            text,
-            parseMode,
-            disableWebPagePreview,
-            disableNotification,
-            replyToMessageId,
-            allowSendingWithoutReply,
-            replyMarkup
+            chatId = chatId,
+            text = text,
+            parseMode = parseMode,
+            disableWebPagePreview = disableWebPagePreview,
+            disableNotification = disableNotification,
+            replyMarkup = replyMarkup
         ).also { addResponse(it) }
 
         return SayReaction.create(text)
@@ -117,11 +113,10 @@ class TelegramReactions(
         parseMode: ParseMode? = null,
         disableNotification: Boolean? = null,
         replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean = false
+        replyMarkup: ReplyMarkup? = null
     ) = sendPhoto(
         url, caption, parseMode, disableNotification, replyToMessageId,
-        replyMarkup, allowSendingWithoutReply
+        replyMarkup
     )
 
     fun sendPhoto(
@@ -130,12 +125,16 @@ class TelegramReactions(
         parseMode: ParseMode? = null,
         disableNotification: Boolean? = null,
         replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean = false
+        replyMarkup: ReplyMarkup? = null
     ): ImageReaction {
         api.sendPhoto(
-            chatId, TelegramFile.ByUrl(url), caption, parseMode, disableNotification, replyToMessageId,
-            allowSendingWithoutReply, replyMarkup
+            chatId = chatId,
+            photo = TelegramFile.ByUrl(url),
+            caption = caption,
+            parseMode = parseMode,
+            disableNotification = disableNotification,
+            replyToMessageId = replyToMessageId,
+            replyMarkup = replyMarkup
         ).also { addResponse(it) }
 
         return ImageReaction.create(url)
@@ -152,16 +151,14 @@ class TelegramReactions(
         replyMarkup: ReplyMarkup? = null,
         allowSendingWithoutReply: Boolean = false
     ) = api.sendVideo(
-        chatId,
-        TelegramFile.ByUrl(url),
-        duration,
-        width,
-        height,
-        caption,
-        disableNotification,
-        replyToMessageId,
-        allowSendingWithoutReply,
-        replyMarkup
+        chatId = chatId,
+        video = TelegramFile.ByUrl(url),
+        duration = duration,
+        width = width,
+        height = height,
+        caption = caption,
+        disableNotification = disableNotification,
+        replyMarkup = replyMarkup
     ).also { addResponse(it) }
 
     fun sendVoice(
@@ -190,12 +187,17 @@ class TelegramReactions(
         title: String? = null,
         disableNotification: Boolean? = null,
         replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean = false
+        replyMarkup: ReplyMarkup? = null
     ): AudioReaction {
         api.sendAudio(
-            chatId, TelegramFile.ByUrl(url), duration, performer, title, disableNotification, replyToMessageId,
-            allowSendingWithoutReply, replyMarkup
+            chatId = chatId,
+            audio = TelegramFile.ByUrl(url),
+            duration = duration,
+            performer = performer,
+            title = title,
+            disableNotification = disableNotification,
+            replyToMessageId = replyToMessageId,
+            replyMarkup = replyMarkup
         ).also { addResponse(it) }
 
         return AudioReaction.create(url)
@@ -246,70 +248,59 @@ class TelegramReactions(
         firstName: String,
         lastName: String? = null,
         disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean? = null
     ) = api.sendContact(
         chatId,
         phoneNumber,
         firstName,
         lastName,
         disableNotification,
-        replyToMessageId,
-        allowSendingWithoutReply,
-        replyMarkup
     ).also { addResponse(it) }
 
     fun sendLocation(
         latitude: Float,
         longitude: Float,
         livePeriod: Int? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean? = null,
+        disableNotification: Boolean? = null
     ) = api.sendLocation(
         chatId,
         latitude,
         longitude,
         livePeriod,
         disableNotification,
-        replyToMessageId,
-        allowSendingWithoutReply,
-        replyMarkup
     ).also { addResponse(it) }
 
     fun sendMediaGroup(
         mediaGroup: MediaGroup,
         disableNotification: Boolean? = null,
         replyToMessageId: Long? = null
-    ) = api.sendMediaGroup(chatId, mediaGroup, disableNotification, replyToMessageId)
+    ) = api.sendMediaGroup(chatId, mediaGroup, disableNotification)
 
     fun sendVideoNote(
-        url: String,
+        file: File,
         duration: Int? = null,
         length: Int? = null,
         disableNotification: Boolean? = null,
         replyToMessageId: Long? = null,
         replyMarkup: ReplyMarkup? = null,
-        allowSendingWithoutReply: Boolean? = null
     ) = api.sendVideoNote(
-        chatId, url, duration, length, disableNotification, replyToMessageId, allowSendingWithoutReply, replyMarkup
+        chatId = chatId,
+        videoNote = TelegramFile.ByFile(file),
+        duration = duration,
+        length = length,
+        disableNotification = disableNotification,
+        protectContent = false,
+        replyToMessageId = replyToMessageId,
+        allowSendingWithoutReply = false,
+        replyMarkup = replyMarkup,
     ).also { addResponse(it) }
 
     fun sendInvoice(
         paymentInvoiceInfo: PaymentInvoiceInfo,
         disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        inlineKeyboardMarkup: InlineKeyboardMarkup? = null,
-        allowSendingWithoutReply: Boolean? = null
     ) = api.sendInvoice(
         chatId,
         paymentInvoiceInfo,
         disableNotification,
-        replyToMessageId,
-        allowSendingWithoutReply,
-        inlineKeyboardMarkup
     ).also { addResponse(it) }
 
     fun answerPreCheckoutQuery(preCheckoutQueryId: String, ok: Boolean, errorMessage: String? = null) =

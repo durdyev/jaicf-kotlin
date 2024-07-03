@@ -69,7 +69,7 @@ To make it possible you have to append a special plugin to your _build.gradle.kt
 ```kotlin
 plugins {
     application
-    kotlin("jvm") version "1.3.71"
+    kotlin("jvm") version "1.8.0"
     id("com.justai.jaicf.jaicp-build-plugin") version "0.1.1"
 }
 ```

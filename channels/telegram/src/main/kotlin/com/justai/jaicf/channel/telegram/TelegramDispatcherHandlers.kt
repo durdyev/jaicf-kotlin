@@ -6,13 +6,14 @@ import com.github.kotlintelegrambot.dispatcher.handlers.Handler
 import com.github.kotlintelegrambot.entities.Message
 import com.github.kotlintelegrambot.entities.Update
 import com.github.kotlintelegrambot.entities.payments.SuccessfulPayment
+import com.justai.jaicf.channel.telegram.SuccessfulPaymentHandler.*
 
-internal fun Dispatcher.successfulPayment(body: SuccessfulPaymentHandler.SuccessfulPaymentHandlerEnvironment.() -> Unit) {
+internal fun Dispatcher.successfulPayment(body: SuccessfulPaymentHandlerEnvironment.() -> Unit) {
     addHandler(SuccessfulPaymentHandler(body))
 }
 
 internal class SuccessfulPaymentHandler(
-    private val handleSuccessfulPayment: SuccessfulPaymentHandlerEnvironment.() -> Unit
+    private val handlePreCheckoutQuery: SuccessfulPaymentHandlerEnvironment.() -> Unit
 ) : Handler {
 
     override fun checkUpdate(update: Update): Boolean {
@@ -20,17 +21,13 @@ internal class SuccessfulPaymentHandler(
     }
 
     override suspend fun handleUpdate(bot: Bot, update: Update) {
-        val message = update.message ?: return
-        val successfulPayment = message.successfulPayment ?: return
-
-        val environment = SuccessfulPaymentHandlerEnvironment(
-            bot = bot,
-            update = update,
-            message = message,
-            successfulPayment = successfulPayment
+        val preCheckoutQueryHandlerEnv = SuccessfulPaymentHandlerEnvironment(
+            bot,
+            update,
+            checkNotNull(update.message),
+            checkNotNull(update.message?.successfulPayment)
         )
-
-        environment.handleSuccessfulPayment()
+        handlePreCheckoutQuery(preCheckoutQueryHandlerEnv)
     }
 
     data class SuccessfulPaymentHandlerEnvironment(
