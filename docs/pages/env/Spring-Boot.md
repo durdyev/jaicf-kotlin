@@ -20,7 +20,7 @@ Please investigate this example to learn how to develop, configure, build and ru
 
 ```kotlin
 plugins {
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.4.21"
 
     id("org.springframework.boot") version "2.4.4"

@@ -21,7 +21,7 @@ dependencies {
     implementation("org.slf4j:slf4j-log4j12" version {slf4j})
 
     testImplementation("org.junit.jupiter:junit-jupiter-api" version {jUnit})
-    testRuntime("org.junit.jupiter:junit-jupiter-engine" version {jUnit})
+//    testRuntime("org.junit.jupiter:junit-jupiter-engine" version {jUnit})
 }
 
 tasks {

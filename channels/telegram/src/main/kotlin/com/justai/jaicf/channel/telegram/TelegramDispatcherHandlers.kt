@@ -2,7 +2,6 @@ package com.justai.jaicf.channel.telegram
 
 import com.github.kotlintelegrambot.Bot
 import com.github.kotlintelegrambot.dispatcher.Dispatcher
-import com.github.kotlintelegrambot.dispatcher.handlers.HandleUpdate
 import com.github.kotlintelegrambot.dispatcher.handlers.Handler
 import com.github.kotlintelegrambot.entities.Message
 import com.github.kotlintelegrambot.entities.Update
@@ -14,12 +13,22 @@ internal fun Dispatcher.successfulPayment(body: SuccessfulPaymentHandlerEnvironm
 }
 
 internal class SuccessfulPaymentHandler(
-    handlePreCheckoutQuery: SuccessfulPaymentHandlerEnvironment.() -> Unit
-) : Handler(SuccessfulPaymentHandlerProxy(handlePreCheckoutQuery)) {
+    private val handlePreCheckoutQuery: SuccessfulPaymentHandlerEnvironment.() -> Unit
+) : Handler {
 
-    override val groupIdentifier = "successfulPayment"
+    override fun checkUpdate(update: Update): Boolean {
+        return update.message?.successfulPayment != null
+    }
 
-    override fun checkUpdate(update: Update) = update.message?.successfulPayment != null
+    override suspend fun handleUpdate(bot: Bot, update: Update) {
+        val preCheckoutQueryHandlerEnv = SuccessfulPaymentHandlerEnvironment(
+            bot,
+            update,
+            checkNotNull(update.message),
+            checkNotNull(update.message?.successfulPayment)
+        )
+        handlePreCheckoutQuery(preCheckoutQueryHandlerEnv)
+    }
 
     data class SuccessfulPaymentHandlerEnvironment(
         val bot: Bot,
@@ -27,18 +36,4 @@ internal class SuccessfulPaymentHandler(
         val message: Message,
         val successfulPayment: SuccessfulPayment
     )
-
-    private class SuccessfulPaymentHandlerProxy(
-        private val handlePreCheckoutQuery: SuccessfulPaymentHandlerEnvironment.() -> Unit
-    ) : HandleUpdate {
-        override fun invoke(bot: Bot, update: Update) {
-            val preCheckoutQueryHandlerEnv = SuccessfulPaymentHandlerEnvironment(
-                bot,
-                update,
-                checkNotNull(update.message),
-                checkNotNull(update.message?.successfulPayment)
-            )
-            handlePreCheckoutQuery(preCheckoutQueryHandlerEnv)
-        }
-    }
 }

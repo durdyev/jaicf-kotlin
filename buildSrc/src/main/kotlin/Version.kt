@@ -1,8 +1,8 @@
 object Version {
     // Kotlin
-    const val kotlin = "1.4.21"
-    const val stdLib = "1.4.21"
-    const val reflect = "1.4.0"
+    const val kotlin = "1.6.0"
+    const val stdLib = "1.6.0"
+    const val reflect = "1.6.0"
 
     // Libraries
     const val jackson = "2.12.3"

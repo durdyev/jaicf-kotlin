@@ -43,7 +43,7 @@ If you're using _jaicp-build-plugin_ you don't need to include _shadowJar_ plugi
 ```groovy
 plugins {
     application
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.8.0"
     id("com.justai.jaicf.jaicp-build-plugin") version "0.1.1"
 }
 
