@@ -4,6 +4,8 @@ import com.github.kotlintelegrambot.Bot
 import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.entities.inputmedia.MediaGroup
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
+import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
+import com.github.kotlintelegrambot.entities.keyboard.WebAppInfo
 import com.github.kotlintelegrambot.entities.payments.PaymentInvoiceInfo
 import com.github.kotlintelegrambot.network.Response
 import com.github.kotlintelegrambot.types.TelegramBotResult
@@ -26,7 +28,7 @@ class TelegramReactions(
     override val liveChatProvider: JaicpLiveChatProvider?
 ) : Reactions(), JaicpCompatibleAsyncReactions {
 
-    val chatId = ChatId.fromId(request.update.message?.chat?.id?:request.clientId.toLong())
+    val chatId = ChatId.fromId(request.update.message?.chat?.id ?: request.clientId.toLong())
     private val messages = mutableListOf<Message>()
 
     private fun addResponse(pair: Pair<retrofit2.Response<Response<Message>?>?, Exception?>) {
@@ -305,4 +307,37 @@ class TelegramReactions(
 
     fun answerPreCheckoutQuery(preCheckoutQueryId: String, ok: Boolean, errorMessage: String? = null) =
         api.answerPreCheckoutQuery(preCheckoutQueryId, ok, errorMessage)
+
+    fun removeButtons(text: String) = api.sendMessage(
+        text = text,
+        chatId = chatId,
+        replyMarkup = ReplyKeyboardRemove()
+    ).also { addResponse(it) }
+
+    fun buttons(text: String, replyMarkup: ReplyMarkup?) = api.sendMessage(
+        text = text,
+        chatId = chatId,
+        replyMarkup = replyMarkup
+    ).also { addResponse(it) }
+
+    fun webApp(text: String, url: String, inline: Boolean = true) = run {
+        val webApp = WebAppInfo(url)
+        var replyMarkup: ReplyMarkup? = null
+        if (inline) {
+           replyMarkup = InlineKeyboardMarkup.create(
+               listOf(listOf(InlineKeyboardButton.WebApp(text, webApp)))
+           )
+        } else {
+            replyMarkup = KeyboardReplyMarkup(
+                keyboard = listOf(listOf(KeyboardButton(text, webApp=webApp))),
+                resizeKeyboard = true
+            )
+        }
+        api.sendMessage(
+            text = text,
+            chatId = chatId,
+            replyMarkup = replyMarkup
+        ).also { addResponse(it) }
+    }
+
 }

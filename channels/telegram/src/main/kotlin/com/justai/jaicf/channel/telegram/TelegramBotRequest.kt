@@ -47,7 +47,7 @@ data class TelegramQueryRequest(
     override val update: Update,
     val message: Message,
     val data: String
-) : TelegramBotRequest, QueryBotRequest(clientId = update.message?.clientId!!, input = data)
+) : TelegramBotRequest, QueryBotRequest(clientId = update.callbackQuery?.message?.chat?.id?.toString()!!, input = data)
 
 data class TelegramLocationRequest(
     override val update: Update,
@@ -116,7 +116,9 @@ data class TelegramSuccessfulPaymentRequest(
 
 data class TelegramCallbackQueryRequest(
     override val update: Update
-) : TelegramBotRequest, QueryBotRequest(clientId = update.callbackQuery?.from?.id.toString(), input = TelegramEvent.CALLBACK_QUERY)
+) : TelegramBotRequest, QueryBotRequest(
+    clientId = update.message?.clientId?:update.message?.chat?.id.toString(),
+    input = TelegramEvent.CALLBACK_QUERY)
 
 
 interface TelegramInvocationRequest : TelegramBotRequest, InvocationRequest {
