@@ -6,6 +6,14 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Telegram Channel implementation. Enables JA
 
 repositories {
     mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/durdyev/kotlin-telegram-bot")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+        }
+    }
 }
 
 plugins {
@@ -15,7 +23,7 @@ plugins {
 
 dependencies {
     core()
-    api("com.github.kotlintelegrambot:telegram:6.1.1") {
+    api("pro.ninjacoder.kotlintelegrambot:telegram:6.1.1-SNAPSHOT") {
         exclude("org.jetbrains.kotlin", "kotlin-stdlib")
     }
     implementation("com.google.code.gson:gson:2.11.0")

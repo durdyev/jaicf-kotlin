@@ -16,6 +16,6 @@ class JaicfKotlin(project: Project): PluginAdapter(project) {
     override fun Project.apply() {
         pluginManager.apply("org.jetbrains.kotlin.jvm")
         dependencies { "implementation"(kotlin("stdlib", Version.stdLib)) }
-        tasks.withType<KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
+        tasks.withType<KotlinCompile> { kotlinOptions.jvmTarget = "11" }
     }
 }

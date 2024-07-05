@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Core component. Provides DSL, Tests API and
 plugins {
     `jaicf-kotlin`
     `maven-publish`
-    `jaicf-junit`
+//    `jaicf-junit`
     `java-test-fixtures`
 }
 
