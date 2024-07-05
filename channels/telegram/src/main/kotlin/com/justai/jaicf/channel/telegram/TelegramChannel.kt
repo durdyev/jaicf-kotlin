@@ -4,9 +4,9 @@ import com.github.kotlintelegrambot.Bot
 import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.*
-import com.github.kotlintelegrambot.dispatcher.handlers.Handler
 import com.github.kotlintelegrambot.entities.Update
 import com.github.kotlintelegrambot.logging.LogLevel.All
+import com.github.kotlintelegrambot.webhook
 import com.google.gson.Gson
 import com.justai.jaicf.api.BotApi
 import com.justai.jaicf.channel.http.HttpBotRequest
@@ -21,6 +21,7 @@ import com.justai.jaicf.channel.telegram.handlers.WebAppDataHandler
 import com.justai.jaicf.context.RequestContext
 import com.justai.jaicf.helpers.http.withTrailingSlash
 import com.justai.jaicf.helpers.kotlin.PropertyWithBackingField
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -30,7 +31,8 @@ class TelegramChannel(
     override val botApi: BotApi,
     private val telegramBotToken: String,
     private val telegramApiUrl: String = "https://api.telegram.org/",
-    private val requestExecutor: Executor = Executors.newFixedThreadPool(10)
+    private val requestExecutor: Executor = Executors.newFixedThreadPool(10),
+    private val webHookUrl: String? = null
 ) : JaicpCompatibleAsyncBotChannel, InvocableBotChannel {
 
     private val gson: Gson = Gson()
@@ -41,6 +43,12 @@ class TelegramChannel(
         apiUrl = telegramApiUrl.withTrailingSlash()
         token = telegramBotToken
         logLevel = All()
+
+        if (webHookUrl != null) {
+            webhook {
+                url = webHookUrl
+            }
+        }
 
         dispatch {
             addHandler(WebAppDataHandler(botApi))
@@ -121,6 +129,9 @@ class TelegramChannel(
     override fun process(request: HttpBotRequest): HttpBotResponse {
         val update: Update = gson.fromJson(request.receiveText(), Update::class.java)
         update.httpBotRequest = request
+        runBlocking {
+            bot.processUpdate(update)
+        }
         return HttpBotResponse.accepted()
     }
 
@@ -138,7 +149,11 @@ class TelegramChannel(
     }
 
     fun run() {
-        bot.startPolling()
+        if (webHookUrl != null) {
+            bot.startWebhook()
+        } else {
+            bot.startPolling()
+        }
     }
 
     companion object : JaicpCompatibleAsyncChannelFactory {
