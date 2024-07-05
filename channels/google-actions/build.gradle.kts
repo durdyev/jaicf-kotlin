@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Google Actions Channel implementation. Enab
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

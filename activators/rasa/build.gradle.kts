@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin RASA Activator Adapter. Provides intent rec
 plugins {
     `jaicf-kotlin`
     `jaicf-kotlin-serialization`
-    `jaicf-publish`
+    `maven-publish`
     `jaicf-junit`
 }
 

@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Core component. Provides DSL, Tests API and
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
     `jaicf-junit`
     `java-test-fixtures`
 }
@@ -27,4 +27,22 @@ dependencies {
     testFixturesApi(kotlin("test-junit"))
     testFixturesApi(kotlin("test"))
     testFixturesApi("ch.qos.logback:logback-classic:1.2.3")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/durdyev/jaicf-kotlin")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
 }

@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Caila NLU Activator Adapter. Provides inten
 plugins {
     `jaicf-kotlin`
     `jaicf-kotlin-serialization`
-    `jaicf-publish`
+    `maven-publish`
     `jaicf-junit`
 }
 

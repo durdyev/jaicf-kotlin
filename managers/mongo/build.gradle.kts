@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "MongoDB BotContextManager implementation to store your J
 plugins {
     `jaicf-kotlin`
     `jaicf-junit`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

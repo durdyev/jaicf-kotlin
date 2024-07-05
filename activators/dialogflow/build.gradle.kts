@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Dialogflow Activator Adapter. Provides inte
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

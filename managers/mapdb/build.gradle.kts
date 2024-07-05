@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "MapDB BotContextManager implementation to store your JAI
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
     `jaicf-junit`
 }
 

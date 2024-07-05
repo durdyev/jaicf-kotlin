@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Alexa Channel implementation. Enables JAICF
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

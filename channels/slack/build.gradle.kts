@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Aimybox Slack implementation. Enables JAICF
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

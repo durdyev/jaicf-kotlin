@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Aimybox Channel implementation. Enables JAI
 plugins {
     `jaicf-kotlin`
     `jaicf-kotlin-serialization`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

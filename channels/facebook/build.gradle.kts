@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Facebook Channel implementation. Enables JA
 plugins {
     `jaicf-kotlin`
     `jaicf-kotlin-serialization`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

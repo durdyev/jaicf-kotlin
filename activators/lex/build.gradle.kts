@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Lex Activator Adapter. Provides intent reco
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
     `jaicf-junit`
 }
 

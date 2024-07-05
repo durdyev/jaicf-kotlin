@@ -6,7 +6,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Viber Channel implementation. Enables JAICF
 
 plugins {
     `jaicf-kotlin`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {

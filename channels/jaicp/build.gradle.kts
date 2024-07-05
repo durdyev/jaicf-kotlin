@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin JAICP Channel implementation. Enables JAICF
 plugins {
     `jaicf-kotlin`
     `jaicf-kotlin-serialization`
-    `jaicf-publish`
+    `maven-publish`
     `jaicf-junit`
 }
 

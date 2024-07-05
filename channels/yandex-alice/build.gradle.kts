@@ -7,7 +7,7 @@ ext[POM_DESCRIPTION] = "JAICF-Kotlin Yandex Alice Channel implementation. Enable
 plugins {
     `jaicf-kotlin`
     `jaicf-kotlin-serialization`
-    `jaicf-publish`
+    `maven-publish`
 }
 
 dependencies {
